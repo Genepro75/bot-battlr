@@ -1,49 +1,25 @@
-// Simple API wrapper for bots data
-const API_BASE_URL = 'http://localhost:3000';
+import React from "react";
 
-export async function fetchBots() {
-  const response = await fetch(`${API_BASE_URL}/bots`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch bots');
-  }
-  return response.json();
+export default function BotCard({ bot, onEnlist, onDischarge }) {
+  return (
+    <article className="bot-card" aria-label={bot.name}>
+      <button className="discharge" aria-label={`Discharge ${bot.name}`} onClick={(e) => { e.stopPropagation(); onDischarge(); }}>
+        x
+      </button>
+
+      <img src={bot.avatar_url} alt={`${bot.name} avatar`} width="120" height="120" />
+      <h3>{bot.name}</h3>
+      <p><em>{bot.catchphrase}</em></p>
+      <ul>
+        <li>Health: {bot.health}</li>
+        <li>Damage: {bot.damage}</li>
+        <li>Armor: {bot.armor}</li>
+        <li>Class: {bot.bot_class}</li>
+      </ul>
+
+      <div>
+        <button onClick={onEnlist}>Enlist</button>
+      </div>
+    </article>
+  );
 }
-
-export async function fetchBotById(botId) {
-  const response = await fetch(`${API_BASE_URL}/bots/${botId}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch bot');
-  }
-  return response.json();
-}
-
-export async function updateBot(botId, updates) {
-  const response = await fetch(`${API_BASE_URL}/bots/${botId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updates),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to update bot');
-  }
-  return response.json();
-}
-
-export async function deleteBot(botId) {
-  const response = await fetch(`${API_BASE_URL}/bots/${botId}`, {
-    method: 'DELETE',
-  });
-  if (!response.ok) {
-    throw new Error('Failed to delete bot');
-  }
-  return true;
-}
-
-export default {
-  fetchBots,
-  fetchBotById,
-  updateBot,
-  deleteBot,
-};
-
-
