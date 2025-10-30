@@ -1,25 +1,48 @@
-import React from "react";
+// API functions for bot operations
+const BOTS_API_URL = "http://localhost:3001/bots";
 
-export default function BotCard({ bot, onEnlist, onDischarge }) {
-  return (
-    <article className="bot-card" aria-label={bot.name}>
-      <button className="discharge" aria-label={`Discharge ${bot.name}`} onClick={(e) => { e.stopPropagation(); onDischarge(); }}>
-        x
-      </button>
+// Fetch all bots from the API
+export async function fetchBots() {
+  try {
+    const response = await fetch(BOTS_API_URL);
+    if (!response.ok) {
+      throw new Error("Failed to fetch bots");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching bots:", error);
+    throw error;
+  }
+}
 
-      <img src={bot.avatar_url} alt={`${bot.name} avatar`} width="120" height="120" />
-      <h3>{bot.name}</h3>
-      <p><em>{bot.catchphrase}</em></p>
-      <ul>
-        <li>Health: {bot.health}</li>
-        <li>Damage: {bot.damage}</li>
-        <li>Armor: {bot.armor}</li>
-        <li>Class: {bot.bot_class}</li>
-      </ul>
+// Delete a bot by ID
+export async function deleteBot(id) {
+  try {
+    const response = await fetch(`${BOTS_API_URL}/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete bot");
+    }
+    return true;
+  } catch (error) {
+    console.error("Error deleting bot:", error);
+    throw error;
+  }
+}
 
-      <div>
-        <button onClick={onEnlist}>Enlist</button>
-      </div>
-    </article>
-  );
+// Get a single bot by ID
+export async function getBotById(id) {
+  try {
+    const response = await fetch(`${BOTS_API_URL}/${id}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch bot");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching bot:", error);
+    throw error;
+  }
 }
